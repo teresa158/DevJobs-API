@@ -2,24 +2,23 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
     /**
-     * Seed the application's database.
+     * Point d'entrée de tous les seeders.
+     * L'ORDRE est important :
+     *   1. SkillSeeder  → les skills doivent exister avant les users/offres
+     *   2. UserSeeder   → crée users, candidates, companies, offers, applications
+     *   3. JobOfferSeeder → vide, conservé pour structure
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        $this->call([
+            SkillSeeder::class,
+            UserSeeder::class,
+            JobOfferSeeder::class,
         ]);
     }
 }
