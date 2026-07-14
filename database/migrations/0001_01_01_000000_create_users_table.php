@@ -8,17 +8,19 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
+     * Table principale : stocke les identifiants de connexion + le rôle.
      */
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
+            $table->id();                                    // BIGINT UNSIGNED AUTO_INCREMENT PK
+            $table->string('name');                          // Nom complet
+            $table->string('email')->unique();               // Email unique (login)
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->string('password');                      // Hash bcrypt
+            $table->enum('role', ['candidate', 'company', 'admin'])->default('candidate'); // Rôle
             $table->rememberToken();
-            $table->timestamps();
+            $table->timestamps();                            // created_at + updated_at
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
