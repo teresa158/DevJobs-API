@@ -1,9 +1,10 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\JobOfferController;
 use Illuminate\Support\Facades\Route;
 
-// ─── Routes publiques (pas besoin de token) ───────────────
+// ─── Routes publiques ─────────────────────────────────────
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login',    [AuthController::class, 'login']);
 
@@ -11,5 +12,12 @@ Route::post('/login',    [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 
-    // Les futures routes protégées iront ici
+    // ─── Offres d'emploi ──────────────────────────────────
+    // apiResource crée automatiquement les 5 routes CRUD :
+    //   GET    /api/job-offers          → index
+    //   POST   /api/job-offers          → store
+    //   GET    /api/job-offers/{id}     → show
+    //   PUT    /api/job-offers/{id}     → update
+    //   DELETE /api/job-offers/{id}     → destroy
+    Route::apiResource('job-offers', JobOfferController::class);
 });
