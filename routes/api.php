@@ -20,4 +20,10 @@ Route::middleware('auth:sanctum')->group(function () {
     //   PUT    /api/job-offers/{id}     → update
     //   DELETE /api/job-offers/{id}     → destroy
     Route::apiResource('job-offers', JobOfferController::class);
+
+        // ─── Candidatures ─────────────────────────────────────
+    Route::get('/applications', [\App\Http\Controllers\ApplicationController::class, 'index']);
+    Route::post('/job-offers/{jobOfferId}/apply', [\App\Http\Controllers\ApplicationController::class, 'store']);
+    Route::put('/applications/{application}/status', [\App\Http\Controllers\ApplicationController::class, 'update']);
+
 });
