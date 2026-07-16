@@ -2,28 +2,20 @@
 
 namespace App\Http\Requests\Application;
 
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateApplicationStatusRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
-        return false;
+        // Seules les entreprises peuvent changer le statut d'une candidature
+        return $this->user()->isCompany();
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
-            //
+            'status' => 'required|in:accepted,rejected,pending',
         ];
     }
 }

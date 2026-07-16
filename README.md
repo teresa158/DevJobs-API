@@ -1,59 +1,70 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# DevJobs API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+DevJobs API est une plateforme backend RESTful conçue pour la mise en relation entre des **Candidats** et des **Entreprises**. L'API permet aux entreprises de publier des offres d'emploi, et aux candidats d'y postuler, tout en sécurisant l'accès grâce à un système d'authentification et de gestion des rôles.
 
-## About Laravel
+## 🚀 Technologies utilisées
+- **Framework** : Laravel 11 (PHP)
+- **Base de données** : MySQL
+- **Authentification** : Laravel Sanctum (Tokens)
+- **Architecture** : MVC étendu (Controllers, Services, FormRequests, API Resources, Enums)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 📦 Fonctionnalités principales
+- **Authentification sécurisée** : Inscription et connexion par token.
+- **Gestion des rôles** : Deux rôles distincts (`candidate` et `company`) gérés via des Middlewares et des Requests.
+- **Offres d'emploi** : Création, lecture, modification et suppression (Soft Deletes) réservées aux entreprises.
+- **Candidatures** : 
+  - Les candidats peuvent postuler aux offres ouvertes.
+  - Les entreprises peuvent visualiser les candidatures reçues et modifier leur statut (Accepté/Refusé).
+- **Relations avancées** : Gestion des compétences (Many-to-Many), profils utilisateurs (One-to-One), etc.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🛣️ Liste des Endpoints (API Routes)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Toutes les routes sont préfixées par `/api`.
 
-## Learning Laravel
+### 🔐 Authentification (Routes Publiques)
+| Méthode | Endpoint | Description | Body (JSON) |
+| --- | --- | --- | --- |
+| `POST` | `/register` | Inscription d'un nouvel utilisateur | `name`, `email`, `password`, `password_confirmation`, `role` (candidate/company) |
+| `POST` | `/login` | Connexion et récupération du Token | `email`, `password` |
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### 🏢 Offres d'Emploi (Routes Protégées - Token Requis)
+| Méthode | Endpoint | Description | Autorisation | Body (JSON) |
+| --- | --- | --- | --- | --- |
+| `GET` | `/job-offers` | Liste toutes les offres disponibles | Tous (Candidats et Entreprises) | *Aucun* |
+| `GET` | `/job-offers/{id}` | Détails d'une offre spécifique | Tous | *Aucun* |
+| `POST` | `/job-offers` | Créer une nouvelle offre d'emploi | **Entreprise uniquement** | `title`, `description`, `contract_type`, `status`, `skills` (array) |
+| `PUT` | `/job-offers/{id}` | Modifier une offre existante | **Propriétaire de l'offre** | `title`, `description`, `contract_type`, `status`, `skills` |
+| `DELETE` | `/job-offers/{id}` | Supprimer une offre (Soft delete) | **Propriétaire de l'offre** | *Aucun* |
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 📝 Candidatures (Routes Protégées - Token Requis)
+| Méthode | Endpoint | Description | Autorisation | Body (JSON) |
+| --- | --- | --- | --- | --- |
+| `GET` | `/applications` | Historique candidat **OU** Candidatures reçues | Tous | *Aucun* |
+| `POST` | `/job-offers/{id}/apply`| Postuler à une offre | **Candidat uniquement** | `cover_letter` (optionnel) |
+| `PUT` | `/applications/{id}/status`| Accepter ou refuser une candidature | **Propriétaire de l'offre** | `status` (accepted, rejected, pending) |
 
-## Laravel Sponsors
+### 🚪 Déconnexion
+| Méthode | Endpoint | Description | Autorisation |
+| --- | --- | --- | --- |
+| `POST` | `/logout` | Déconnexion (Révocation du Token) | Tous | *Aucun* |
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## 🛠️ Installation et Lancement
 
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+1. Cloner le projet.
+2. Installer les dépendances : 
+   ```bash
+   composer install
+   ```
+3. Configurer la base de données : copier `.env.example` vers `.env` et ajouter les identifiants MySQL.
+4. Générer la clé d'application : 
+   ```bash
+   php artisan key:generate
+   ```
+5. Lancer les migrations et les seeders : 
+   ```bash
+   php artisan migrate --seed
+   ```
+6. Démarrer le serveur local : 
+   ```bash
+   php artisan serve
+   ```
