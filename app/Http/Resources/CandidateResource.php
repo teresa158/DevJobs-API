@@ -7,13 +7,16 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class CandidateResource extends JsonResource
 {
-    /**
-     * Transform the resource into an array.
-     *
-     * @return array<string, mixed>
-     */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'id'               => $this->id,
+            'bio'              => $this->bio,
+            'github_url'       => $this->github_url,
+            'portfolio_url'    => $this->portfolio_url,
+            'years_experience' => $this->years_experience,
+            'user'             => new UserResource($this->whenLoaded('user')),
+            'skills'           => SkillResource::collection($this->whenLoaded('skills')),
+        ];
     }
 }

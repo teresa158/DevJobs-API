@@ -61,6 +61,7 @@ class ApplicationService
             'candidate_id' => $candidateId,
             'job_offer_id' => $jobOfferId,
             'cover_letter' => $coverLetter,
+            'status'       => 'pending',
         ]);
     }
 

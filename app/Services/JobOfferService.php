@@ -12,6 +12,7 @@ class JobOfferService
      * Liste toutes les offres ouvertes disponibles.
      * with() → Eager Loading : charge les relations en une seule requête SQL
      *          au lieu de faire une requête par offre (N+1 Problem)
+     * Cette classe JobOfferService regroupe toutes les actions (la logique métier) qu'on peut effectuer sur les offres d'emploi.
      */
     public function listOpen(int $perPage = 15): LengthAwarePaginator
     {

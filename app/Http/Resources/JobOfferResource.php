@@ -7,13 +7,21 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class JobOfferResource extends JsonResource
 {
-    /**
-     * Transform the resource into an array.
-     *
-     * @return array<string, mixed>
-     */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'id'            => $this->id,
+            'title'         => $this->title,
+            'description'   => $this->description,
+            'salary_min'    => $this->salary_min,
+            'salary_max'    => $this->salary_max,
+            'location'      => $this->location,
+            'contract_type' => $this->contract_type->value, // Enum → string
+            'status'        => $this->status,
+            'created_at'    => $this->created_at->toDateTimeString(),
+            // Relations conditionnelles (apparaissent seulement si chargées)
+            'company'       => new CompanyResource($this->whenLoaded('company')),
+            'skills'        => SkillResource::collection($this->whenLoaded('skills')),
+        ];
     }
 }

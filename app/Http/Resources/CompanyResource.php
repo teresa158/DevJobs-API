@@ -7,13 +7,18 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class CompanyResource extends JsonResource
 {
-    /**
-     * Transform the resource into an array.
-     *
-     * @return array<string, mixed>
-     */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'id'           => $this->id,
+            'company_name' => $this->company_name,
+            'siret'        => $this->siret,
+            'website'      => $this->website,
+            'description'  => $this->description,
+            'address'      => $this->address,
+            'city'         => $this->city,
+            // whenLoaded → n'apparaît QUE si la relation est chargée (évite le N+1)
+            'user'         => new UserResource($this->whenLoaded('user')),
+        ];
     }
 }
